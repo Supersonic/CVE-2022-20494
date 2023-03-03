@@ -1,0 +1,19 @@
+# CVE-2022-20494
+
+[Download as APK](https://github.com/Supersonic/CVE-2022-20494/releases/download/release/ZenRulePDoS.apk)
+
+This app demonstrates a high severity permanent denial-of-service vulnerability in Android's `NotificationManagerService` that I discovered. After running the exploit, the device show a black screen or it will keep repeatedly crashing and rebooting. 
+
+It exploits the `addAutomaticZenRule` API to exhaust device memory, by crafting malicious zen rules (a.k.a. do not disturb rules) that occupy a large amount of memory. The app allows you to control the size and the amount of rules added: the predefined amount should work in almost all devices.
+
+The app targets API 24 (Android 7.0 Nougat) but may not work in devices prior to Android Q, due to changes to the zen rule structure. It also requires the dangerous-level permission `ACCESS_NOTIFICATION_POLICY` to work; the app will request it upon launch.
+
+The vulnerability was fixed - along with many other bugs in the same subsystem - in [Jan 2023 Android Security Bulletin](https://source.android.com/docs/security/bulletin/2023-01-01) by [trimming long strings](https://android.googlesource.com/platform/frameworks/base/+/de172ba0d434c940be9e2aad8685719731ab7da2) within `AutomaticZenRule` constructors. (both normal and parcel serialization related constructors)
+
+If you have ADB access, devices bricked due to this bug may potentially be recovered by running the following ADB command.
+
+```
+adb uninstall me.sithi.cve_2022_20494
+```
+
+Note that this project is provided for educational purposes only; please don't use it for malicious activities.
